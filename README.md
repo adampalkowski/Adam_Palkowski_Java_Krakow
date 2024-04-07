@@ -19,6 +19,7 @@
    ./gradlew build
 
    ```
+Make sure you have JDK installed.
 3. Run the tests
    ```bash
    ./gradlew test
