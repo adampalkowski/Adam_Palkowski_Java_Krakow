@@ -6,6 +6,8 @@ target/
 !**/src/test/**/build/
 
 ### IntelliJ IDEA ###
+.idea/
+gradle/wrapper/
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
