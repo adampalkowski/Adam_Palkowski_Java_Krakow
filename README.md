@@ -11,8 +11,8 @@
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
-   cd ocadoTech
+   git clone https://github.com/adampalkowski/Adam_Palkowski_Java_Krakow
+   cd Adam_Palkowski_Java_Krakow
    ```
 2. Build the project
    ```bash
