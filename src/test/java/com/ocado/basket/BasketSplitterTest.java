@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BasketSplitterTest {
     //Change file paths accordingly!
+    //BasketSplitter asks for absolute file path, that is why we hardcode it here
     private final String configFilePath = "C:\\Users\\adam\\IdeaProjects\\ocadoTech\\src\\test\\resources\\config.json";
     private final String emptyConfigFilePath = "C:\\Users\\adam\\IdeaProjects\\ocadoTech\\src\\test\\resources\\empty-config.json";
     private final String basket1FilePath = "C:\\Users\\adam\\IdeaProjects\\ocadoTech\\src\\test\\resources\\basket-1.json";
@@ -73,10 +75,6 @@ public class BasketSplitterTest {
             e.printStackTrace();
         }
     }
-
-
-
-
 
     // Test case to split items from basket-1.json
     @Test
