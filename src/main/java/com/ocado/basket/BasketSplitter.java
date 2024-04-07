@@ -9,10 +9,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class BasketSplitter {
-    /* ... */
-    private final Map<String, List<String>> config;
+    private final Map<String, List<String>> config; // Map to store configuration data
 
+    // Constructor to initialize BasketSplitter with configuration data from a JSON file
     public BasketSplitter(String absolutePathToConfigFile) throws IOException {
+        if (absolutePathToConfigFile == null) {
+            throw new IllegalArgumentException("Config file path cannot be null");
+        }
         Gson gson = new Gson();
         FileReader reader = new FileReader(absolutePathToConfigFile);
         Type type = new TypeToken<Map<String, List<String>>>() {}.getType();
@@ -22,45 +25,40 @@ public class BasketSplitter {
     public Map<String, List<String>> getConfig(){
         return  this.config;
     }
+    // Method to split items into delivery groups based on configuration
+
     public Map<String, List<String>> split(List<String> items) {
-        /* ... */
-        //Stwórz mape deliveryMap dostaw i pustych list do przechowania produktow
+        // Check if items list is null
+        if (items == null) {
+            // Handle the case when items list is null, possibly by returning an empty map
+            return Collections.emptyMap();
+        }
+        // Check if config map is null
+        if (config == null) {
+            // Handle the case when config is null, possibly by returning an empty map
+            return Collections.emptyMap();
+        }
+
+        // Map to store items grouped by delivery method
         Map<String, List<String>> deliveryMap = new HashMap<>();
-        // Dla każdego produktu z koszyka dodaj go do `deliveryMap`
+
+        // Group items according to the configuration
         for (String item : items) {
             List<String> deliveryMethods = config.get(item);
             if (deliveryMethods != null) {
                 for (String deliveryMethod : deliveryMethods) {
-                        if (deliveryMap.containsKey(deliveryMethod)){
-                            List<String> arr = new ArrayList<>();
-                            arr = deliveryMap.get(deliveryMethod);
-                            arr.add(item);
-                            deliveryMap.put(deliveryMethod,arr);
-                        }else{
-                            List<String> arr = new ArrayList<>();
-                            arr.add(item);
-                            deliveryMap.put(deliveryMethod,arr);
-
-                        }
+                    // Add item to the corresponding delivery method
+                    deliveryMap.computeIfAbsent(deliveryMethod, k -> new ArrayList<>()).add(item);
                 }
             }
         }
-        System.out.println(deliveryMap.toString());
 
-        //posortuj mape od po wielkosci value
-        // Posortuj mapę `deliveryMap` od największej do najmniejszej liczby produktów
+        // Sort deliveryMap by the size of lists (items) in each delivery method
         Map<String, List<String>> sortedDeliveryMap = deliveryMap.entrySet().stream()
                 .sorted(Map.Entry.<String, List<String>>comparingByValue(Comparator.comparingInt(List::size)))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-        System.out.println(sortedDeliveryMap.toString());
 
-        //idz od najmniejszej wielkosc value
-        //jesli element z value znajduje sie w dalej w mapie usun go z z obecnego elementu
-        //idz w gore mapy elementow
-        //nie musimy spwadzac lub usuwac z ostaniej wartosci mapy
-        // Iteruj po posortowanej mapie
-// Iteruj po posortowanej mapie
-        // Iterate through the sorted map
+        // Iterate through sortedDeliveryMap to remove items that belong to multiple delivery methods
         Iterator<Map.Entry<String, List<String>>> iterator = sortedDeliveryMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, List<String>> entry = iterator.next();
@@ -88,26 +86,8 @@ public class BasketSplitter {
                 }
             }
         }
-        System.out.println(sortedDeliveryMap);
 
-        return sortedDeliveryMap;
+        return sortedDeliveryMap;// Return the sorted and cleaned delivery map
     }
-    /* ... */
-    public static void main(String[] args) {
-        try {
-            BasketSplitter splitter = new BasketSplitter("config.json");
-            List<String> items = new ArrayList<>();
-            items.add("Steak (300g)");
-            items.add("Carrots (1kg)");
-            items.add("Soda (24x330ml)");
-            items.add("AA Battery (4 Pcs.)");
-            items.add("Espresso Machine");
-            items.add("Garden Chair");
 
-            Map<String, List<String>> result = splitter.split(items);
-            System.out.println(result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
